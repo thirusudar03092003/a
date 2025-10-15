@@ -1,0 +1,69 @@
+Node A
+int Led = 13;          // define LED Interface
+int buttonpin = 7;     // define Metal Touch Sensor Interface
+int val;               // define numeric variable
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(Led, OUTPUT);        // define LED as output interface
+  pinMode(buttonpin, INPUT);   // define metal touch sensor as input interface
+}
+
+void loop() {
+  val = digitalRead(buttonpin); // read sensor value
+  // Serial.println(val);        // uncomment for debugging
+
+  if (val == 1) {  // When the metal touch sensor detects a signal, LED flashes
+    digitalWrite(Led, HIGH);
+    Serial.println(val);
+    delay(1000);  // keep LED ON for 1 sec
+  } else {
+    digitalWrite(Led, LOW);
+    Serial.println(val);
+    delay(1000);  // check every 1 sec
+  }
+}
+
+Node B
+
+/* ZigbeeSerialBridge.ino
+   Bidirectional bridge: USB Serial <-> CC2530 (SoftwareSerial)
+   Use pins 10 (RX) and 11 (TX) for SoftwareSerial
+*/
+
+#include <SoftwareSerial.h>
+
+const uint8_t ZB_RX_PIN = 10; // Arduino reads here (connected to CC2530 TX)
+const uint8_t ZB_TX_PIN = 11; // Arduino writes here (connected to CC2530 RX)
+
+SoftwareSerial zbSerial(ZB_RX_PIN, ZB_TX_PIN); // (rx, tx)
+
+void setup() {
+  Serial.begin(9600);     // USB -> laptop
+  zbSerial.begin(9600);   // UART to CC2530; match module baud
+  Serial.println("Zigbee bridge ready");
+}
+
+void loop() {
+  // forward from laptop -> CC2530
+  while (Serial.available()) {
+    uint8_t b = Serial.read();
+    zbSerial.write(b);
+  }
+
+  // forward from CC2530 -> laptop
+  while (zbSerial.available()) {
+    uint8_t b = zbSerial.read();
+    Serial.write(b);
+  }
+}
+
+Zigbee module 2
+Arduino Uno 2 
+Cable 2
+Jumper wire 8 
+
+P03 - 10 RX
+P02 - 11 TX 
+Vcc - 3.3 v
+Gnd - gnd
