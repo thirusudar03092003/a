@@ -1,3 +1,5 @@
+//expt 2 (zigbee)
+
 Node A
 int Led = 13;          // define LED Interface
 int buttonpin = 7;     // define Metal Touch Sensor Interface
@@ -70,7 +72,7 @@ Vcc - 3.3 v
 Gnd - gnd
 
 
-//expt 1 
+//expt 1  introduction to ardino board and led
 int ledPin = 13;
 void setup() {
   // put your setup code here, to run once:
@@ -85,3 +87,4 @@ void loop() {
   digitalWrite(ledPin, LOW);
   delay(1000);
 }
+
