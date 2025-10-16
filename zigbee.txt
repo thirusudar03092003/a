@@ -88,3 +88,88 @@ void loop() {
   delay(1000);
 }
 
+//expt 2 interface Arduino with zigbee
+void setup() {
+  Serial.begin(9600);   // Set baud rate
+  pinMode(13, OUTPUT);  // LED pin
+}
+
+void loop() {
+  if (Serial.available()) {
+    char data = Serial.read();
+    Serial.print("Received: ");
+    Serial.println(data);
+
+    if (data == '1') {
+      digitalWrite(13, HIGH);
+    } 
+    else if (data == '0') {
+      digitalWrite(13, LOW);
+    }
+  }
+}
+
+expt 3 
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(9, 10);
+
+void setup() {
+  mySerial.begin(9600);
+  Serial.begin(9600);
+  delay(1000);
+  Serial.println("Type 's' to send SMS or 'r' to receive SMS");
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    switch (Serial.read()) {
+      case 's':
+        mySerial.println("AT+CMGF=1");
+        delay(1000);
+        mySerial.println("AT+CMGS=\"+91xxxxxxxxx\"");
+        delay(1000);
+        mySerial.println("Technolab creation");
+        delay(100);
+        mySerial.write(26);
+        delay(1000);
+        Serial.println("SMS Sent!");
+        break;
+      case 'r':
+        mySerial.println("AT+CMTI=2,2,0,0,0");
+        delay(1000);
+        Serial.println("Ready to receive SMS...");
+        break;
+    }
+  }
+
+  if (mySerial.available() > 0) {
+    Serial.write(mySerial.read());
+  }
+}
+
+expt 4
+void setup() {
+  // Set pin 13 (built-in LED) as an output
+  pinMode(13, OUTPUT);
+  // Start serial communication at 9600 baud
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Check if data is available to read from the serial monitor
+  if (Serial.available()) {
+    // Read the incoming byte (character)
+    char cmd = Serial.read();
+
+    // If the received character is '1', turn the LED on (HIGH)
+    if (cmd == '1') {
+      digitalWrite(13, HIGH);
+    }
+
+    // If the received character is '0', turn the LED off (LOW)
+    if (cmd == '0') {
+      digitalWrite(13, LOW);
+    }
+  }
+}
